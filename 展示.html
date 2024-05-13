@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log File Viewer</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Log Data Display</h1>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Column1</th>
+                <th>Column2</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        const logFileUrl = 'C:\\Users\\asus\\PycharmProjects\\Finishpot\\mitm_log.txt'; // 更新为你的日志文件URL
+        const fetchInterval = 5000; // 检查新条目的时间间隔，单位是毫秒
+
+        function fetchLogData() {
+            fetch(logFileUrl)
+                .then(response => response.text())
+                .then(text => {
+                    const lines = text.split('\n');
+                    const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = ''; // 清除旧的表格数据
+
+                    lines.forEach(line => {
+                        if (line.trim() !== "") {
+                            const row = document.createElement('tr');
+                            const values = line.split(',');
+
+                            values.forEach(value => {
+                                const cell = document.createElement('td');
+                                cell.textContent = value.trim();
+                                row.appendChild(cell);
+                            });
+
+                            tableBody.appendChild(row);
+                        }
+                    });
+                })
+                .catch(error => console.error('Failed to fetch log data:', error));
+        }
+
+        // 初始化数据加载
+        fetchLogData();
+
+        // 设置定时器以定期更新数据
+        setInterval(fetchLogData, fetchInterval);
+    </script>
+</body>
+</html>
